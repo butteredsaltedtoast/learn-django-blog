@@ -26,6 +26,7 @@ def post_create(request):
 def post_detail(request, pk):
     post = Post.objects.get(pk=pk)
     comments = post.comments.all().order_by('-created_at')
+    form = CommentForm()
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return redirect('ion_login')
@@ -36,7 +37,7 @@ def post_detail(request, pk):
             comment.author = request.user
             comment.save()
             return redirect('post_detail', pk=pk)
-    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments})
+    return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments, 'form' : form})
 
 @login_required(login_url='/oauth/login/')
 def post_edit(request, pk):
