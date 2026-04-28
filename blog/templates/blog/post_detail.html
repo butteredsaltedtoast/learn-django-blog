@@ -6,7 +6,7 @@
         <h1>{{post.title}}</h1> 
         <p>{{post.content}}</p>
         <small>by {{post.author.username}} on {{post.created_at}}</small>
-        {% if post.updated_at != post.created_at %}
+        {% if post.updated_at|date:"Y-m-d H:i:s" != post.created_at|date:"Y-m-d H:i:s" %}
             <br><small>edited: {{post.updated_at}}</small>
         {% endif %}
 
