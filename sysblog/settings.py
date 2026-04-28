@@ -122,3 +122,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ION_CLIENT_ID = '4ZlqS0VbtbWnZeUyHeXq6JEYOuxOvHgcNTbVDlKI'
+ION_CLIENT_SECRET = 'LQ33CQ9S8pu6KJCjKrwqvVDKT5YtczP23ts6gFwJDyzNiqBEa0EA3ntIEEYxWwm0S9TyUgfafWU5FFgVmRB49gqkJ3CerBtU75L3cVlhHQdf5XsVlDBAt6J5G3ayFUfn'
+ION_REDIRECT_URI = 'http://localhost:8000/oauth/callback/'
