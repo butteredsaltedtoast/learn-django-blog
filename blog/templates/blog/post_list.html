@@ -1,26 +1,16 @@
-<!doctype html>
-<html>
-    <head><title>Blog</title></head>
-    <body>
+{% extends 'blog/base.html' %}
+{% block title %}Blog Posts{% endblock %}
+{% block content %}
 
-        <h1> Blog Posts </h1>
+<h1>Blog Posts</h1>
+<a href = "{% url 'post_create' %}">Create a new post</a>
 
-        {% if user.is_authenticated %}
-            <p> Logged in as {{ user.username }} | <a href="{% url 'ion_logout' %}">Logout</a></p>
-        {% else %}
-            <p><a href = "{% url 'ion_login' %}">Log in</a> to make posts.</p>
-        {% endif %}
-
-        <a href = "{% url 'post_create' %}">Create a new post</a>
-
-        {% for post in posts %}
-            <h2><a href = "{% url 'post_detail' post.pk %}">{{post.title}}</a></h2>
-            <p>{{post.content}}</p>
-            <small>by {{post.author.username}} on {{post.created_at}}</small>
-            <hr>
-        {% empty %}
-            <p> No posts yet. </p>
-        {% endfor %}
-
-    </body>
-</html>
+{% for post in posts %}
+    <h2><a href = "{% url 'post_detail' post.pk %}">{{post.title}}</a></h2>
+    <p>{{post.content|truncatewords:30}}</p>
+    <p class = "meta">by {{post.author.username}} on {{post.created_at}}</p>
+    <hr>
+{% empty %}
+    <p> No posts yet. </p>
+{% endfor %}
+{% endblock %}

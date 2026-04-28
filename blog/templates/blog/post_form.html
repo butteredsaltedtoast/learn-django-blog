@@ -1,17 +1,10 @@
-<!doctype html>
-<html>
-    <head><title>Create Post</title></head>
-    <body>
-
-        <h1>Create a Post</h1>
-
-        <form method="post">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit">Post</button>
-        </form>
-
-        <a href = "{% url 'post_list' %}">Back to posts</a>
-
-    </body>
-</html>
+{% extends 'blog/base.html' %}
+{% block title %}{% if form.instance.pk %}Edit Post{% else %}Create Post{% endif %}{% endblock %}
+{% block content %}
+<h1>{% if form.instance.pk %}Edit Post{% else %}Create a Post{% endif %}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if form.instance.pk %}Save{% else %}Post{% endif %}</button>
+</form>
+{% endblock %}
