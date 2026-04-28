@@ -3,9 +3,13 @@
     <head><title>{{post.title}}</title></head>
     <body>
 
-       <h1>{{post.title}}</h1> 
-       <p>{{post.content}}</p>
-       <small>by {{post.author.username}} on {{post.created_at}}</small>
+        <h1>{{post.title}}</h1> 
+        <p>{{post.content}}</p>
+        <small>by {{post.author.username}} on {{post.created_at}}</small>
+        {% if post.updated_at != post.created_at %}
+            <br><small>edited: {{post.updated_at}}</small>
+        {% endif %}
+
 
         {% if user == post.author %}
             <p><a href = "{% url 'post_edit' post.pk %}">Edit</a> | <a href = "{% url 'post_delete' post.pk %}">Delete</a></p>
