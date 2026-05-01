@@ -126,3 +126,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ION_CLIENT_ID = '4ZlqS0VbtbWnZeUyHeXq6JEYOuxOvHgcNTbVDlKI'
 ION_CLIENT_SECRET = 'LQ33CQ9S8pu6KJCjKrwqvVDKT5YtczP23ts6gFwJDyzNiqBEa0EA3ntIEEYxWwm0S9TyUgfafWU5FFgVmRB49gqkJ3CerBtU75L3cVlhHQdf5XsVlDBAt6J5G3ayFUfn'
 ION_REDIRECT_URI = 'http://localhost:8000/oauth/callback/'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'update-post-dates-every-minute': {
+        'task': 'blog.tasks.update_post_dates',
+        'schedule': 60.0,
+    },
+}
