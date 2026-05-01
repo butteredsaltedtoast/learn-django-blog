@@ -23,7 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-zu_w+f-y3$$==unb=z21sc-%*c2s5frm-sk+8)n-cf2$y*ybw-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+import os
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middlware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -116,7 +118,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -127,8 +132,8 @@ ION_CLIENT_ID = '4ZlqS0VbtbWnZeUyHeXq6JEYOuxOvHgcNTbVDlKI'
 ION_CLIENT_SECRET = 'LQ33CQ9S8pu6KJCjKrwqvVDKT5YtczP23ts6gFwJDyzNiqBEa0EA3ntIEEYxWwm0S9TyUgfafWU5FFgVmRB49gqkJ3CerBtU75L3cVlhHQdf5XsVlDBAt6J5G3ayFUfn'
 ION_REDIRECT_URI = 'http://localhost:8000/oauth/callback/'
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = 'sqla+postgresql://USER:PASS@HOST/DBNAME'
+CELERY_RESULT_BACKEND = 'db+postgresql://USER:PASS@HOST/DBNAME'
 
 from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {

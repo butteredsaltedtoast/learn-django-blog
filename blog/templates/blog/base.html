@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
     <head>
+        {% load static %}
+        <link rel="icon" href = "{% static 'favicon.ico' %}">
         <title> {% block title %}Blog{% endblock %}</title>
 
         <style>
