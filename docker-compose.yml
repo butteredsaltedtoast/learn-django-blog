@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    networks:
+    - blog_network
+  
+  blog:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    networks:
+      - blog_network
+
+  celery:
+    build: .
+    command: celery -A sysblog worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - blog_network
+  
+  celerybeat:
+    build: .
+    command: celery -A sysblog beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - blog_network
+
+networks:
+  blog_network:
+    driver: bridge
