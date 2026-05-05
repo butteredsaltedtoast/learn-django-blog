@@ -89,6 +89,9 @@ if 'DIRECTOR_DATABASE_URL' in os.environ:
             'PASSWORD' : parsed.password,
             'HOST' : parsed.hostname,
             'PORT' : parsed.port,
+            'OPTIONS': {
+                'options': '-c search_path=myschema'
+            },
         }
     }
 
