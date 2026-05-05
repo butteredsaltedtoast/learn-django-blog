@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middlware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,12 +76,34 @@ WSGI_APPLICATION = 'sysblog.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+from urllib.parse import urlparse
+
+if 'DIRECTOR_DATABASE_URL' in os.environ:
+    db_url = os.environ['DIRECTOR_DATABASE_URL']
+    parsed = urlparse(db_url)
+    DATABASES = {
+        'default' : {
+            'ENGINE' : 'django.db.backends.postgresql',
+            'NAME' : parsed.path[1:],
+            'USER' : parsed.username,
+            'PASSWORD' : parsed.password,
+            'HOST' : parsed.hostname,
+            'PORT' : parsed.port,
+        }
     }
-}
+
+    CELERY_BROKER_URL = f'sqla+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}'
+    CELERY_RESULT_BACKEND = f'db+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}'
+
+else:
+    DATABASES = {
+        'default' : {
+            'ENGINE' : 'django.db.backends.sqlite3',
+            'NAME' : BASE_DIR / 'db.sqlite3',
+        }
+    }
+    CELERY_BROKER_URL = 'redis://redis:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 
 # Password validation
@@ -128,12 +150,9 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ION_CLIENT_ID = '4ZlqS0VbtbWnZeUyHeXq6JEYOuxOvHgcNTbVDlKI'
-ION_CLIENT_SECRET = 'LQ33CQ9S8pu6KJCjKrwqvVDKT5YtczP23ts6gFwJDyzNiqBEa0EA3ntIEEYxWwm0S9TyUgfafWU5FFgVmRB49gqkJ3CerBtU75L3cVlhHQdf5XsVlDBAt6J5G3ayFUfn'
-ION_REDIRECT_URI = 'http://localhost:8000/oauth/callback/'
-
-CELERY_BROKER_URL = 'sqla+postgresql://USER:PASS@HOST/DBNAME'
-CELERY_RESULT_BACKEND = 'db+postgresql://USER:PASS@HOST/DBNAME'
+ION_CLIENT_ID = os.environ.get('ION_CLIENT_ID', '')
+ION_CLIENT_SECRET = os.environ.get('ION_CLIENT_SECRET', '')
+ION_REDIRECT_URI = os.environ.get('ION_REDIRECT_URI', 'http://localhost:8000/oauth/callback/')
 
 from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
