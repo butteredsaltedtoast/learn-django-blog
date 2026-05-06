@@ -98,8 +98,8 @@ if 'DIRECTOR_DATABASE_URL' in os.environ:
         }
     }
 
-    CELERY_BROKER_URL = f'sqla+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}'
-    CELERY_RESULT_BACKEND = f'db+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}'
+    CELERY_BROKER_URL = f'sqla+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}?options=-csearch_path%3Dmyschema'
+    CELERY_RESULT_BACKEND = f'db+postgresql://{parsed.username}:{parsed.password}@{parsed.hostname}:{parsed.port}/{parsed.path[1:]}?options=-csearch_path%3Dmyschema'
 
 else:
     DATABASES = {
